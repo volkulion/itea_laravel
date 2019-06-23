@@ -45,5 +45,5 @@ WORKDIR /src
 
 USER root
 #ENTRYPOINT ["/scripts/keep-alive.sh"]
-EXPOSE 9000
+EXPOSE 80
 CMD ["supervisord"]
