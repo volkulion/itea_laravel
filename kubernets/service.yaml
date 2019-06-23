@@ -5,7 +5,7 @@ metadata:
   labels:
     app: itea-laravel
 spec:
-  replicas: 4
+  replicas: 2
   selector:
     matchLabels:
       app: itea-laravel
@@ -22,8 +22,8 @@ spec:
           containerPort: 80
         resources:
         env:
-            - name: v
-              value: "0.1"     
+            - name: laravel-app-pod
+              value: "0.2"
 
 ---
 apiVersion: v1
