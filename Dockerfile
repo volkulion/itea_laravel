@@ -11,6 +11,7 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
 
 # Nginx configuration
 COPY docker/helpers/nginx/server.conf /etc/nginx/sites-available/
+#COPY docker/helpers/nginx/conf.d/* etc/nginx/conf.d/
 
 COPY ./docker/helpers/keep-alive.sh /scripts/keep-alive.sh
 RUN chmod +x /scripts/keep-alive.sh
@@ -32,8 +33,8 @@ COPY --chown=www-data:www-data ./ /src
 RUN chmod -R 0777 /src/storage && mkdir -p /src/bootstrap/cache && chmod -R 0777 /src/bootstrap/cache
 
 # Composer
-RUN rm -rf /src/vendor && \
-    composer install
+#RUN rm -rf /src/vendor && \
+#    composer install
 
 # NPM
 RUN rm -rf /src/node_modules && \
