@@ -1,124 +1,73 @@
-version: '3.2'
-
-networks:
-  backend-network:
-    driver: bridge
-  frontend-network:
-    driver: bridge
-
-volumes:
-  redis-data:
-  pg-data:
-  home-dir:
+version: '3'
 
 services:
-  &app-service app: &app-service-template
-    image: registry.gitlab.com/tarampampam/laravel-in-docker/app:latest
-    #build:
-    #  context: ./docker/app
-    #  dockerfile: Dockerfile
-    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+  app:
+    networks:
+      itea-test:
+        ipv4_address: 172.29.0.8
+    container_name: itea_app_php
+    image: volkulion/itea_laravel:latest
     volumes:
-    - /etc/passwd:/etc/passwd:ro
-    - /etc/group:/etc/group:ro
-    - ./src:/app:rw
-    - home-dir:/home/user
-    hostname: *app-service
+    - ./:/src/:delegated
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: &redis-port 6379
-      DB_HOST: postgres
-      DB_PORT: &pg-port 5432
-      DB_DATABASE: &pg-db-name app
-      DB_USERNAME: &pg-username forge
-      DB_PASSWORD: &pg-password secret
-      SCHEDULE_PERIOD: 60
-      FPM_PORT: &php-fpm-port 9000
-      FPM_USER: "${USER_ID:-1000}"
-      FPM_GROUP: "${GROUP_ID:-1000}"
-      APP_ENV: local
-      APP_DEBUG: 'true'
-      HOME: /home/user
-    command: keep-alive.sh
-    depends_on:
-    - redis
-    - postgres
-    networks:
-    - backend-network
-
-  &queue-service queue:
-    <<: *app-service-template
-    restart: always
-    hostname: *queue-service
-    command: php /app/artisan queue:work
-
-  &scheduler-service scheduler:
-    <<: *app-service-template
-    restart: always
-    hostname: *scheduler-service
-    command: scheduler.sh "php /app/artisan schedule:run"
-
-  &php-fpm-service php-fpm:
-    <<: *app-service-template
-    user: 'root:root'
-    restart: always
-    hostname: *php-fpm-service
-    ports: [*php-fpm-port]
-    entrypoint: /fpm-entrypoint.sh
-    command: php-fpm --nodaemonize -d "opcache.enable=0" -d "display_startup_errors=On" -d "display_errors=On" -d "error_reporting=E_ALL"
-    networks:
-    - backend-network
-    - frontend-network
-
-  &node-service node:
-    <<: *app-service-template
-    image: tarampampam/node:10.10-alpine
-    restart: on-failure
-    hostname: *node-service
-    working_dir: /app
-    command: []
-    depends_on: []
-    networks:
-    - frontend-network
-
+      NODE_ENV: "development"
+      XDEBUG_DEBUG: "off"
+      XDEBUG_PROFILE: "off"
+    expose:
+    - "80"
+    ports:
+    - 8081:80
   nginx:
-    image: registry.gitlab.com/tarampampam/laravel-in-docker/nginx:latest
-    #build:
-    #  context: ./docker/nginx
-    #  dockerfile: Dockerfile
-    restart: always
-    working_dir: /usr/share/nginx/html
-    environment:
-      FPM_HOST: *php-fpm-service
-      FPM_PORT: *php-fpm-port
-      ROOT_DIR: '/app/public' # App path must equals with php-fpm container path
-    volumes:
-    - ./src:/app:ro
-    ports: ['9999:80']
-    depends_on:
-    - *php-fpm-service
     networks:
-    - frontend-network
+      itea-test:
+        ipv4_address: 172.29.0.10
+    container_name: itea_nginx
+    image: nginx:stable
+    expose:
+    - "80"
+    ports:
+    - 127.0.0.1:80:80
+    volumes:
+    - ./docker/helpers/nginx/conf.d:/etc/nginx/conf.d/:delegated
+
+  mariadb:
+    networks:
+      itea-test:
+        ipv4_address: 172.29.0.3
+    container_name: itea_mariadb
+    image: mariadb:10.3
+    expose:
+    - "3306"
+    ports:
+    - "3306:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: "itea"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test"
+    volumes:
+    - ./docker/helpers/mariadb/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf:delegated
+    - mysqldb:/var/lib/mysql:delegated
 
   redis:
-    image: redis:4.0.11-alpine
-    restart: always
-    command: redis-server
-    volumes:
-    - redis-data:/data:rw
-    ports: [*redis-port, '16379:6379'] # Port 16379 for connecting from localhost
     networks:
-    - backend-network
+      itea-test:
+        ipv4_address: 172.29.0.4
+    container_name: itea_redis
+    image: launcher.gcr.io/google/redis4
+    command: ["/etc/redis/redis.conf"]
+    expose:
+    - "6379"
+    ports:
+    - "6379:6379"
+    volumes:
+    - redis:/data:delegated
+    - ./docker/helpers/redis/redis.conf:/etc/redis/redis.conf:delegated
 
-  postgres:
-    image: postgres:9.6.10-alpine
-    restart: always
-    environment:
-      POSTGRES_DB: *pg-db-name
-      POSTGRES_USER: *pg-username
-      POSTGRES_PASSWORD: *pg-password
-    volumes:
-    - pg-data:/var/lib/postgresql/data:rw
-    ports: [*pg-port, '15432:5432'] # Port 15432 for connecting from localhost using, for example, data-grip
-    networks:
-    - backend-network
+networks:
+  itea-test:
+    external: true
+
+volumes:
+  mysqldb:
+  redis:

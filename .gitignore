@@ -4,7 +4,6 @@ git /node_modules
 /public/storage
 /storage/*.key
 /vendor
-.env
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
