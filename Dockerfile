@@ -33,8 +33,8 @@ COPY --chown=www-data:www-data ./ /src
 RUN chmod -R 0777 /src/storage && mkdir -p /src/bootstrap/cache && chmod -R 0777 /src/bootstrap/cache
 
 # Composer
-#RUN rm -rf /src/vendor && \
-#    composer install
+RUN rm -rf /src/vendor && \
+    composer install
 
 # NPM
 RUN rm -rf /src/node_modules && \
