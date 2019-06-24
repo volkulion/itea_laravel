@@ -38,9 +38,11 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
-
   type: LoadBalancer
-    
+status:
+  loadBalancer:
+    ingress:
+    - ip: 13.69.57.37
   
 
 
