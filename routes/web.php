@@ -19,7 +19,7 @@ Route::get('/test', function () {
     return 'test';
 });
 
-Route::get('/help', function () {
+Route::get('/help1', function () {
     return 'new help page';
 });
 
