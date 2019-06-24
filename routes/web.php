@@ -22,3 +22,7 @@ Route::get('/test', function () {
 Route::get('/help', function () {
     return 'new help page';
 });
+
+Route::get('/about', function () {
+    return 'new about page';
+});
