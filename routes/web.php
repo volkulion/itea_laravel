@@ -19,6 +19,6 @@ Route::get('/test', function () {
     return 'test';
 });
 
-Route::get('/777', function () {
-    return '777';
+Route::get('/resource', function () {
+    return 'resource';
 });
