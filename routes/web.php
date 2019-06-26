@@ -19,6 +19,6 @@ Route::get('/test', function () {
     return 'test';
 });
 
-Route::get('/resource', function () {
+Route::get('/resource12', function () {
     return 'resource';
 });
