@@ -26,3 +26,7 @@ Route::get('/help1', function () {
 Route::get('/about', function () {
     return 'new about page';
 });
+
+Route::get('/tets', function () {
+    return 'new test page';
+});
