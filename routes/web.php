@@ -18,3 +18,7 @@ Route::get('/', function () {
 Route::get('/test', function () {
     return 'test';
 });
+
+Route::get('/777', function () {
+    return '777';
+});
