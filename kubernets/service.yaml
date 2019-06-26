@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: itea
-        image: volkulion/itea_laravel:latest
+        image: volkulion/itea_laravel:latest12
         ports:
         - name: default
           containerPort: 80
