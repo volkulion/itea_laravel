@@ -22,3 +22,7 @@ Route::get('/555', function () {
 Route::get('/resource12', function () {
     return 'resource';
 });
+
+Route::get('/about', function () {
+    return 'about';
+});
