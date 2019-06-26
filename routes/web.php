@@ -15,18 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', function () {
+Route::get('/555', function () {
     return 'test';
-});
-
-Route::get('/help1', function () {
-    return 'new help page';
-});
-
-Route::get('/about', function () {
-    return 'new about page';
-});
-
-Route::get('/tets', function () {
-    return 'new test page';
 });
