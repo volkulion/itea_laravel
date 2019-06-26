@@ -18,3 +18,7 @@ Route::get('/', function () {
 Route::get('/555', function () {
     return 'test';
 });
+
+Route::get('/resource12', function () {
+    return 'resource';
+});
