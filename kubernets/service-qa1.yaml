@@ -1,38 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: itea-deploy
+  name: itea-deploy-qa1
   labels:
-    app: itea-laravel
+    app: itea-laravel-qa1
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: itea-laravel
+      app: itea-laravel-qa1
   template:
     metadata:
       labels:
-        app: itea-laravel
+        app: itea-laravel-qa1
     spec:
       containers:
       - name: itea
-        image: volkulion/itea_laravel:latest
+        image: volkulion/itea_laravel:qa1
         ports:
         - name: default
           containerPort: 80
         resources:
         env:
-            - name: laravel-app-pod
-              value: "0.2"
+        - name: laravel-app-pod
+          value: "0.2"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: itea-laravel
+  name: itea-laravel-qa1
 spec:
   selector:
-    app: itea-laravel
+    app: itea-laravel-qa1
   ports:
   - name: http
     protocol: TCP
